@@ -206,21 +206,21 @@
                 <!--<Rule Name="Configuration"/>-->
             <!--</Rules>-->
         <!--</AttributeInfo>-->
-        <AttributeInfo xsi:type="LookupAttributeDetails" Name="CLI Connection Type"
-                       Description="The CLI connection type that will be used by the driver. Possible values are Auto, Console, SSH, Telnet and TCP. If Auto is selected the driver will choose the available connection type automatically. Default value is Auto."
-                       Type="Lookup" DefaultValue="Auto"
-                       IsReadOnly="false" IsCommand="false">
-            <Rules>
-                <Rule Name="Configuration"/>
-            </Rules>
-            <LookupValues>
-                <LookupValue NumericValue="0" StringValue="Auto"/>
-                <LookupValue NumericValue="1" StringValue="Console"/>
-                <LookupValue NumericValue="2" StringValue="SSH"/>
-                <LookupValue NumericValue="3" StringValue="Telnet"/>
-                <LookupValue NumericValue="4" StringValue="TCP"/>
-            </LookupValues>
-        </AttributeInfo>
+        <!--<AttributeInfo xsi:type="LookupAttributeDetails" Name="CLI Connection Type"-->
+                       <!--Description="The CLI connection type that will be used by the driver. Possible values are Auto, Console, SSH, Telnet and TCP. If Auto is selected the driver will choose the available connection type automatically. Default value is Auto."-->
+                       <!--Type="Lookup" DefaultValue="Auto"-->
+                       <!--IsReadOnly="false" IsCommand="false">-->
+            <!--<Rules>-->
+                <!--<Rule Name="Configuration"/>-->
+            <!--</Rules>-->
+            <!--<LookupValues>-->
+                <!--<LookupValue NumericValue="0" StringValue="Auto"/>-->
+                <!--<LookupValue NumericValue="1" StringValue="Console"/>-->
+                <!--<LookupValue NumericValue="2" StringValue="SSH"/>-->
+                <!--<LookupValue NumericValue="3" StringValue="Telnet"/>-->
+                <!--<LookupValue NumericValue="4" StringValue="TCP"/>-->
+            <!--</LookupValues>-->
+        <!--</AttributeInfo>-->
         <AttributeInfo Name="Serial Number" Description="" Type="String" DefaultValue="" IsReadOnly="true">
             <Rules Override="false">
                 <Rule Name="Setting"/>
