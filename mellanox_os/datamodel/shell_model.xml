@@ -76,9 +76,9 @@
                 <AttachedAttribute Name="Console Password" IsOverridable="true" IsLocal="true">
                     <AllowedValues/>
                 </AttachedAttribute>
-                <AttachedAttribute Name="Console Port" IsOverridable="true" IsLocal="true">
-                    <AllowedValues/>
-                </AttachedAttribute>
+                <!--<AttachedAttribute Name="Console Port" IsOverridable="true" IsLocal="true">-->
+                    <!--<AllowedValues/>-->
+                <!--</AttachedAttribute>-->
                 <AttachedAttribute Name="CLI TCP Port" IsOverridable="true" IsLocal="true">
                     <AllowedValues/>
                 </AttachedAttribute>
@@ -123,7 +123,7 @@
                 <AttributeValue Name="SNMP Write Community" Value=""/>
                 <AttributeValue Name="VRF Management Name" Value=""/>
                 <AttributeValue Name="Console Password" Value="3M3u7nkDzxWb0aJ/IZYeWw=="/>
-                <AttributeValue Name="Console Port" Value="0"/>
+                <!--<AttributeValue Name="Console Port" Value="0"/>-->
                 <AttributeValue Name="CLI TCP Port" Value="0"/>
                 <AttributeValue Name="Sessions Concurrency Limit" Value="1"/>
                 <AttributeValue Name="Console Server IP Address" Value=""/>
