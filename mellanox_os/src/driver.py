@@ -51,23 +51,23 @@ class MellanoxOsDriver (ResourceDriverInterface):
         ssh = paramiko.SSHClient()
         ssh.load_system_host_keys()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        tries = 0
-        while True:
-            try:
-                tries += 1
-                ssh.connect(host,
-                            port=port,
-                            username=username,
-                            password=password,
-                            look_for_keys=True)
-                channel = ssh.invoke_shell(term='console', width=300, height=100000)
-                return ssh, channel, self._ssh_read(context, ssh, channel, prompt_regex)  # eat banner
-            except Exception as e:
-                if tries >= 4:
-                    self._log(context, 'Connection failed after 4 tries')
-                    raise e
-                self._log(context, 'Password rejected or other connectivity error: %s\nsleeping 10 seconds and retrying...' % str(e))
-                time.sleep(10)
+        # tries = 0
+        # while True:
+        #     try:
+        #         tries += 1
+        ssh.connect(host,
+                    port=port,
+                    username=username,
+                    password=password,
+                    look_for_keys=True)
+        channel = ssh.invoke_shell(term='console', width=300, height=100000)
+        return ssh, channel, self._ssh_read(context, ssh, channel, prompt_regex)  # eat banner
+            # except Exception as e:
+            #     if tries >= 4:
+            #         self._log(context, 'Connection failed after 4 tries')
+            #         raise e
+            #     self._log(context, 'Password rejected or other connectivity error: %s\nsleeping 10 seconds and retrying...' % str(e))
+            #     time.sleep(10)
 
     def _ssh_write(self, context, ssh, channel, command):
         self._log(context, 'sending: <<<' + command + '>>>')
