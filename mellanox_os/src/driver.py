@@ -353,7 +353,7 @@ class MellanoxOsDriver (ResourceDriverInterface):
                             self._ssh_command(context, ssh, channel, 'interface ethernet %s switchport mode access' % addr, '[^[#]# ')
                             self._ssh_command(context, ssh, channel, 'interface ethernet %s switchport access vlan %s' % (addr, vlan), '[^[#]# ')
                         else:
-                            self._ssh_command(context, ssh, channel, 'interface ethernet %s switchport access vlan 1' % (addr), '[^[#]# ')
+                            self._ssh_command(context, ssh, channel, 'interface ethernet %s switchport access vlan 2098' % (addr), '[^[#]# ')
                             # self._ssh_command(context, ssh, channel, 'no interface ethernet %s switchport access vlan' % addr, '[^[#]# ')
                     if not isset:
                         self._ssh_command(context, ssh, channel, 'no vlan %s' % vlan, '[^[#]# ')
