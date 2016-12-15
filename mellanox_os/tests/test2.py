@@ -1,8 +1,8 @@
 from cloudshell.shell.core.context import ResourceCommandContext, ConnectivityContext
 
-import driver
+import mellanox_os.src.driver
 
-d = driver.MellanoxOsDriver()
+d = mellanox_os.src.driver.MellanoxOsDriver()
 
 context = ResourceCommandContext()
 

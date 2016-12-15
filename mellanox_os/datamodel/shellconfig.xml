@@ -9,8 +9,6 @@
         <Attributes>
             <Attribute Name="User" Value="" />
             <Attribute Name="Password" Value="" />
-            <Attribute Name="CLI TCP Port" Value="0" />
-            <Attribute Name="CLI Connection Type" Value="Auto" />
         </Attributes>
     </ResourceTemplate>    
 </ResourceTemplates>

@@ -1,8 +1,8 @@
 from cloudshell.shell.core.context import AutoLoadCommandContext, ResourceContextDetails
 
-import driver
+import mellanox_os.src.driver
 
-d = driver.MellanoxOsDriver()
+d = mellanox_os.src.driver.MellanoxOsDriver()
 
 d.fakedata = {
     'show interfaces': '''sn1-rsw-b11-20a [standalone: master] # show interfaces
