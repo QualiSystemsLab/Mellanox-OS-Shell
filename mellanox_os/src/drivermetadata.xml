@@ -1,0 +1,11 @@
+<Driver Description="L2 connectivity and autoload driver for MellanoxOS switches" MainClass="driver.MellanoxOsDriver" Name="MellanoxOsDriver" Version="1.0.0">
+    <Layout>
+        <Category Name="Hidden Commands">
+            <Command Name="ApplyConnectivityChanges" DisplayName="ApplyConnectivityChanges" Tags="allow_unreserved">
+                <Parameters>
+                    <Parameter Name="request" Type="String" Mandatory = "True" DefaultValue="" Description=""/>
+                </Parameters>
+            </Command>
+        </Category>
+    </Layout>
+</Driver>
