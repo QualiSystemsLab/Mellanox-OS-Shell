@@ -314,14 +314,14 @@
         </AttributeInfo>
     </Attributes>
     <ResourceFamilies>
-        <ResourceFamily Name="Switch" Description="" IsSearchable="true" IsPowerSwitch="true">
+        <ResourceFamily Name="Switch" Description="" IsSearchable="true" IsPowerSwitch="false">
             <AttachedAttributes/>
             <AttributeValues/>
             <Models>
             </Models>
             <Categories/>
         </ResourceFamily>
-        <ResourceFamily Name="Router" Description="" IsSearchable="true" IsPowerSwitch="true">
+        <ResourceFamily Name="Router" Description="" IsSearchable="true" IsPowerSwitch="false">
             <AttachedAttributes/>
             <AttributeValues/>
             <Models>
