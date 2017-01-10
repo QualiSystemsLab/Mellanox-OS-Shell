@@ -1,7 +1,3 @@
-
-
-
-
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
@@ -11,10 +7,11 @@ Tests for `MellanoxOsDriver`
 
 import unittest
 
-from mock import patch
+from mock import patch, Mock
 
 from src.driver import MellanoxOsDriver
-from cloudshell.shell.core.context import ResourceCommandContext, ResourceContextDetails, ReservationContextDetails
+from cloudshell.shell.core.context import ResourceCommandContext, ResourceContextDetails, ReservationContextDetails, \
+    InitCommandContext
 
 command2response = {
     'show interfaces': '''sn1-rsw-b11-20a [standalone: master] # show interfaces
@@ -803,6 +800,9 @@ class FakeSSHManager:
     def command(self, command, prompt_regex):
         response = command2response.get(command, '') + '\nFake Prompt > #'
         self._history.append((command, response))
+        if '\n%' in response.replace('\r', '\n'):
+            es = 'CLI error message: ' + response
+            raise Exception(es)
         return response
 
     def disconnect(self):
@@ -821,7 +821,8 @@ class TestMellanoxOsDriver(unittest.TestCase):
     def setUp(self):
         self.driver = MellanoxOsDriver()
         self.fake_ssh_manager = FakeSSHManager()
-        self.driver.initialize(None, ssh_manager=self.fake_ssh_manager)
+        context = Mock(InitCommandContext)
+        self.driver.initialize(context, ssh_manager=self.fake_ssh_manager)
 
     def tearDown(self):
         pass
@@ -829,13 +830,10 @@ class TestMellanoxOsDriver(unittest.TestCase):
     @patch('src.driver.CloudShellAPISession')
     @patch('src.driver.get_qs_logger')
     @patch('src.driver.AutoLoadCommandContext')
-    @patch('src.driver.paramiko.SSHClient')
     @patch('src.driver.get_attribute_by_name', new_callable=lambda: fake_getattr)
-    def test_get_inventory(self, mocked_getattr, mocked_paramiko_sshclient, mocked_autoload_context, mocked_get_qs_logger, mocked_csapi):
+    def test_get_inventory(self, mocked_getattr, mocked_autoload_context, mocked_get_qs_logger, mocked_csapi):
         # print 'Hello from test_get_inventory'
         # Arrange
-
-        # print 'Command map: %s' % fake_channel.command2response
 
         # Act
         result = self.driver.get_inventory(mocked_autoload_context)
@@ -843,47 +841,68 @@ class TestMellanoxOsDriver(unittest.TestCase):
         # Assert
         # for r in result.resources:
         #     print '%s %s' % (r.name, r.model)
-        self.assertTrue(len(result.resources) == 23, 'Discovered 23 resources')
+        self.assertTrue(len(result.resources) == 23, 'Didn\'t discover 23 resources')
 
 
     @patch('src.driver.CloudShellAPISession')
     @patch('src.driver.get_qs_logger')
     @patch('src.driver.ResourceCommandContext')
     @patch('src.driver.get_attribute_by_name', new_callable=lambda: fake_getattr)
-    def test_apply_connectivity_changes(self, mocked_getattr, mocked_resource_context, mocked_get_qs_logger, mocked_csapi):
-        # print 'Hello from test_apply_connectivity_changes'
+    def test_apply_connectivity_changes_connect(self, mocked_getattr, mocked_resource_context, mocked_get_qs_logger, mocked_csapi):
+        # print 'Hello from test_apply_connectivity_changes_connect'
         connect_request = '''{"driverRequest":{"actions":[{"connectionId":"fed17449-c2dc-4213-8c17-569fe7a6c7d9","connectionParams":{"vlanId":"2","mode":"Access","vlanServiceAttributes":[{"attributeName":"Allocation Ranges","attributeValue":"2-4094","type":"vlanServiceAttribute"},{"attributeName":"Isolation Level","attributeValue":"Exclusive","type":"vlanServiceAttribute"},{"attributeName":"Access Mode","attributeValue":"Access","type":"vlanServiceAttribute"},{"attributeName":"VLAN ID","attributeValue":"","type":"vlanServiceAttribute"},{"attributeName":"Virtual Network","attributeValue":"","type":"vlanServiceAttribute"},{"attributeName":"Default VLAN","attributeValue":"","type":"vlanServiceAttribute"},{"attributeName":"QnQ","attributeValue":"False","type":"vlanServiceAttribute"},{"attributeName":"CTag","attributeValue":"","type":"vlanServiceAttribute"}],"type":"setVlanParameter"},"connectorAttributes":[{"attributeName":"Target Interface","attributeValue":"","type":"connectorAttribute"},{"attributeName":"Source Interface","attributeValue":"","type":"connectorAttribute"},{"attributeName":"Selected Network","attributeValue":"2","type":"connectorAttribute"}],"actionId":"fed17449-c2dc-4213-8c17-569fe7a6c7d9_ff77a4b5-5018-4e78-bd36-1a662e1952c5","actionTarget":{"fullName":"MellanoxOs/Chassis 1/Port 2","fullAddress":"10.21.94.241/1/2","type":"actionTarget"},"customActionAttributes":[],"type":"setVlan"},{"connectionId":"fed17449-c2dc-4213-8c17-569fe7a6c7d9","connectionParams":{"vlanId":"2","mode":"Access","vlanServiceAttributes":[{"attributeName":"Allocation Ranges","attributeValue":"2-4094","type":"vlanServiceAttribute"},{"attributeName":"Isolation Level","attributeValue":"Exclusive","type":"vlanServiceAttribute"},{"attributeName":"Access Mode","attributeValue":"Access","type":"vlanServiceAttribute"},{"attributeName":"VLAN ID","attributeValue":"","type":"vlanServiceAttribute"},{"attributeName":"Virtual Network","attributeValue":"","type":"vlanServiceAttribute"},{"attributeName":"Default VLAN","attributeValue":"","type":"vlanServiceAttribute"},{"attributeName":"QnQ","attributeValue":"False","type":"vlanServiceAttribute"},{"attributeName":"CTag","attributeValue":"","type":"vlanServiceAttribute"}],"type":"setVlanParameter"},"connectorAttributes":[{"attributeName":"Target Interface","attributeValue":"","type":"connectorAttribute"},{"attributeName":"Source Interface","attributeValue":"","type":"connectorAttribute"},{"attributeName":"Selected Network","attributeValue":"2","type":"connectorAttribute"}],"actionId":"fed17449-c2dc-4213-8c17-569fe7a6c7d9_61c780ac-d889-4d6e-a41a-0a18ac73c125","actionTarget":{"fullName":"MellanoxOs/Chassis 1/Port 1","fullAddress":"10.21.94.241/1/1","type":"actionTarget"},"customActionAttributes":[],"type":"setVlan"}]}}'''
-        disconnect_request = '''{"driverRequest":{"actions":[{"connectionId":"fed17449-c2dc-4213-8c17-569fe7a6c7d9","connectionParams":{"vlanId":"2","mode":"Access","vlanServiceAttributes":[{"attributeName":"Allocation Ranges","attributeValue":"2-4094","type":"vlanServiceAttribute"},{"attributeName":"Isolation Level","attributeValue":"Exclusive","type":"vlanServiceAttribute"},{"attributeName":"Access Mode","attributeValue":"Access","type":"vlanServiceAttribute"},{"attributeName":"VLAN ID","attributeValue":"","type":"vlanServiceAttribute"},{"attributeName":"Virtual Network","attributeValue":"","type":"vlanServiceAttribute"},{"attributeName":"Default VLAN","attributeValue":"","type":"vlanServiceAttribute"},{"attributeName":"QnQ","attributeValue":"False","type":"vlanServiceAttribute"},{"attributeName":"CTag","attributeValue":"","type":"vlanServiceAttribute"}],"type":"setVlanParameter"},"connectorAttributes":[{"attributeName":"Interface","attributeValue":"MellanoxOs/Chassis 1/Port 1","type":"connectorAttribute"}],"actionId":"fed17449-c2dc-4213-8c17-569fe7a6c7d9_61c780ac-d889-4d6e-a41a-0a18ac73c125","actionTarget":{"fullName":"MellanoxOs/Chassis 1/Port 1","fullAddress":"10.21.94.241/1/1","type":"actionTarget"},"customActionAttributes":[],"type":"removeVlan"},{"connectionId":"fed17449-c2dc-4213-8c17-569fe7a6c7d9","connectionParams":{"vlanId":"2","mode":"Access","vlanServiceAttributes":[{"attributeName":"Allocation Ranges","attributeValue":"2-4094","type":"vlanServiceAttribute"},{"attributeName":"Isolation Level","attributeValue":"Exclusive","type":"vlanServiceAttribute"},{"attributeName":"Access Mode","attributeValue":"Access","type":"vlanServiceAttribute"},{"attributeName":"VLAN ID","attributeValue":"","type":"vlanServiceAttribute"},{"attributeName":"Virtual Network","attributeValue":"","type":"vlanServiceAttribute"},{"attributeName":"Default VLAN","attributeValue":"","type":"vlanServiceAttribute"},{"attributeName":"QnQ","attributeValue":"False","type":"vlanServiceAttribute"},{"attributeName":"CTag","attributeValue":"","type":"vlanServiceAttribute"}],"type":"setVlanParameter"},"connectorAttributes":[{"attributeName":"Interface","attributeValue":"MellanoxOs/Chassis 1/Port 2","type":"connectorAttribute"}],"actionId":"fed17449-c2dc-4213-8c17-569fe7a6c7d9_ff77a4b5-5018-4e78-bd36-1a662e1952c5","actionTarget":{"fullName":"MellanoxOs/Chassis 1/Port 2","fullAddress":"10.21.94.241/1/2","type":"actionTarget"},"customActionAttributes":[],"type":"removeVlan"}]}}'''
 
-        for phase, request, expected_commands in [
-            ('Connect', connect_request, [
+        expected_commands = [
                 'interface ethernet 1/2 switchport mode access',
                 'interface ethernet 1/2 switchport access vlan 2',
                 'vlan 2',
                 'interface ethernet 1/1 switchport mode access',
                 'interface ethernet 1/1 switchport access vlan 2',
                 'vlan 2',
-            ]),
-            ('Disconnect', disconnect_request, [
-                'interface ethernet 1/1 switchport access vlan 2098',
-                'interface ethernet 1/2 switchport access vlan 2098',
-                'no vlan 2',
-            ])]:
-            # Arrange
-            self.fake_ssh_manager.clear_history()
+            ]
 
-            # Act
-            self.driver.ApplyConnectivityChanges(mocked_resource_context, request=request)
+        # Arrange
 
-            # print '\n'.join(['%s => %s' % (a, b) for a, b in fake_channel.history])
+        # Act
+        self.driver.ApplyConnectivityChanges(mocked_resource_context, request=connect_request)
 
-            # Assert
-            errors = []
-            seen = set([command for command, response in self.fake_ssh_manager.get_history()])
-            for command in expected_commands:
-                if command not in seen:
-                    errors.append('%s phase: %s' % (phase, command))
-            self.assertTrue(len(errors) == 0, 'Missing expected commands:\n%s' % '\n'.join(errors))
+        # print '\n'.join(['%s => %s' % (a, b) for a, b in self.fake_ssh_manager.get_history()])
+
+        # Assert
+        errors = []
+        seen = set([command for command, response in self.fake_ssh_manager.get_history()])
+        for command in expected_commands:
+            if command not in seen:
+                errors.append(command)
+        self.assertTrue(len(errors) == 0, 'Missing expected commands:\n%s' % '\n'.join(errors))
+
+    @patch('src.driver.CloudShellAPISession')
+    @patch('src.driver.get_qs_logger')
+    @patch('src.driver.ResourceCommandContext')
+    @patch('src.driver.get_attribute_by_name', new_callable=lambda: fake_getattr)
+    def test_apply_connectivity_changes_disconnect(self, mocked_getattr, mocked_resource_context, mocked_get_qs_logger, mocked_csapi):
+        # print 'Hello from test_apply_connectivity_changes_disconnect'
+        disconnect_request = '''{"driverRequest":{"actions":[{"connectionId":"fed17449-c2dc-4213-8c17-569fe7a6c7d9","connectionParams":{"vlanId":"2","mode":"Access","vlanServiceAttributes":[{"attributeName":"Allocation Ranges","attributeValue":"2-4094","type":"vlanServiceAttribute"},{"attributeName":"Isolation Level","attributeValue":"Exclusive","type":"vlanServiceAttribute"},{"attributeName":"Access Mode","attributeValue":"Access","type":"vlanServiceAttribute"},{"attributeName":"VLAN ID","attributeValue":"","type":"vlanServiceAttribute"},{"attributeName":"Virtual Network","attributeValue":"","type":"vlanServiceAttribute"},{"attributeName":"Default VLAN","attributeValue":"","type":"vlanServiceAttribute"},{"attributeName":"QnQ","attributeValue":"False","type":"vlanServiceAttribute"},{"attributeName":"CTag","attributeValue":"","type":"vlanServiceAttribute"}],"type":"setVlanParameter"},"connectorAttributes":[{"attributeName":"Interface","attributeValue":"MellanoxOs/Chassis 1/Port 1","type":"connectorAttribute"}],"actionId":"fed17449-c2dc-4213-8c17-569fe7a6c7d9_61c780ac-d889-4d6e-a41a-0a18ac73c125","actionTarget":{"fullName":"MellanoxOs/Chassis 1/Port 1","fullAddress":"10.21.94.241/1/1","type":"actionTarget"},"customActionAttributes":[],"type":"removeVlan"},{"connectionId":"fed17449-c2dc-4213-8c17-569fe7a6c7d9","connectionParams":{"vlanId":"2","mode":"Access","vlanServiceAttributes":[{"attributeName":"Allocation Ranges","attributeValue":"2-4094","type":"vlanServiceAttribute"},{"attributeName":"Isolation Level","attributeValue":"Exclusive","type":"vlanServiceAttribute"},{"attributeName":"Access Mode","attributeValue":"Access","type":"vlanServiceAttribute"},{"attributeName":"VLAN ID","attributeValue":"","type":"vlanServiceAttribute"},{"attributeName":"Virtual Network","attributeValue":"","type":"vlanServiceAttribute"},{"attributeName":"Default VLAN","attributeValue":"","type":"vlanServiceAttribute"},{"attributeName":"QnQ","attributeValue":"False","type":"vlanServiceAttribute"},{"attributeName":"CTag","attributeValue":"","type":"vlanServiceAttribute"}],"type":"setVlanParameter"},"connectorAttributes":[{"attributeName":"Interface","attributeValue":"MellanoxOs/Chassis 1/Port 2","type":"connectorAttribute"}],"actionId":"fed17449-c2dc-4213-8c17-569fe7a6c7d9_ff77a4b5-5018-4e78-bd36-1a662e1952c5","actionTarget":{"fullName":"MellanoxOs/Chassis 1/Port 2","fullAddress":"10.21.94.241/1/2","type":"actionTarget"},"customActionAttributes":[],"type":"removeVlan"}]}}'''
+
+        expected_commands = [
+            'interface ethernet 1/1 switchport access vlan 2098',
+            'interface ethernet 1/2 switchport access vlan 2098',
+            'no vlan 2',
+        ]
+        # Arrange
+
+        # Act
+        self.driver.ApplyConnectivityChanges(mocked_resource_context, request=disconnect_request)
+
+        # print '\n'.join(['%s => %s' % (a, b) for a, b in self.fake_ssh_manager.get_history()])
+
+        # Assert
+        errors = []
+        seen = set([command for command, response in self.fake_ssh_manager.get_history()])
+        for command in expected_commands:
+            if command not in seen:
+                errors.append(command)
+        self.assertTrue(len(errors) == 0, 'Missing expected commands:\n%s' % '\n'.join(errors))
 
 
 if __name__ == '__main__':
