@@ -825,7 +825,7 @@ class TestMellanoxOsDriver(unittest.TestCase):
         self.driver.initialize(context, ssh_manager=self.fake_ssh_manager)
 
     def tearDown(self):
-        pass
+        self.driver.cleanup()
 
     @patch('src.driver.CloudShellAPISession')
     @patch('src.driver.get_qs_logger')

@@ -10,15 +10,19 @@ import re
 # https://github.com/QualiSystems/cloudshell-networking/blob/dev/cloudshell/networking/apply_connectivity/models/connectivity_request.py
 import cloudshell
 
-fn = os.path.join(os.path.dirname(cloudshell.__file__), 'networking', 'apply_connectivity', 'models',
-                  'connectivity_request.py')
-with open(fn, 'r') as f:
-    s = f.read()
-if "con_params = ConnectionParams()" in s and "dictionary['vlanId']" not in s:
-    s = s.replace("con_params = ConnectionParams()",
-                  "con_params = ConnectionParams(); con_params.vlanId = dictionary['vlanId']")
-    with open(fn, 'w') as g:
-        g.write(s)
+
+def bugfix():  # pragma: no cover
+    fn = os.path.join(os.path.dirname(cloudshell.__file__), 'networking', 'apply_connectivity', 'models', 'connectivity_request.py')
+    with open(fn, 'r') as f:
+        s = f.read()
+    if "con_params = ConnectionParams()" in s and "dictionary['vlanId']" not in s:
+        s = s.replace("con_params = ConnectionParams()",
+                      "con_params = ConnectionParams(); con_params.vlanId = dictionary['vlanId']")
+        with open(fn, 'w') as g:
+            g.write(s)
+
+bugfix()
+
 ##########################################
 
 
