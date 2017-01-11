@@ -33,7 +33,7 @@ from cloudshell.shell.core.context import AutoLoadCommandContext, InitCommandCon
 from cloudshell.shell.core.context_utils import get_attribute_by_name
 
 from cloudshell.networking.apply_connectivity.apply_connectivity_operation import apply_connectivity_changes, \
-    ConnectivityActionRequest
+    ConnectivityActionRequest, DriverResponseRoot
 from cloudshell.networking.apply_connectivity.models.connectivity_result import ConnectivitySuccessResponse, \
     ConnectivityErrorResponse
 
@@ -170,7 +170,7 @@ class MellanoxOsDriver(ResourceDriverInterface):
         :param ResourceCommandContext context: The context object for the command with resource and reservation info
         :param str request: A JSON object with the list of requested connectivity changes
         :return: a json object with the list of connectivity changes which were carried out by the switch
-        :rtype: str
+        :rtype: DriverResponseRoot
         """
 
         logger = get_logger_from_context(context)

@@ -1,8 +1,10 @@
+python -m unittest discover -s tests/
+
 pip install coverage
 
 del /s /q htmlcov
 
-coverage run -m unittest discover -s tests/
+coverage run --branch -m unittest discover -s tests/
 
 coverage report -m
 
