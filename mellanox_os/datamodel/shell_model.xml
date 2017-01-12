@@ -88,9 +88,9 @@
                 <AttachedAttribute Name="Console User" IsOverridable="true" IsLocal="true">
                     <AllowedValues/>
                 </AttachedAttribute>
-                <AttachedAttribute Name="CLI Connection Type" IsOverridable="true" IsLocal="true">
-                    <AllowedValues/>
-                </AttachedAttribute>
+                <!--<AttachedAttribute Name="CLI Connection Type" IsOverridable="true" IsLocal="true">-->
+                    <!--<AllowedValues/>-->
+                <!--</AttachedAttribute>-->
                 <AttachedAttribute Name="Power Management" IsOverridable="true" IsLocal="true">
                     <AllowedValues/>
                 </AttachedAttribute>
