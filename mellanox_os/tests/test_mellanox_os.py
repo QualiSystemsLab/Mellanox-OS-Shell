@@ -10,7 +10,7 @@ import unittest
 from cloudshell.networking.apply_connectivity.models.connectivity_result import ConnectivityErrorResponse
 from mock import patch, Mock
 
-from src.driver import MellanoxOsDriver
+from mellanox_os.src.driver import MellanoxOsDriver
 from cloudshell.shell.core.context import ResourceCommandContext, ResourceContextDetails, ReservationContextDetails, \
     InitCommandContext
 
