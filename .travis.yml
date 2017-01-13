@@ -12,5 +12,4 @@ notifications:
 python: 
   - "2.7"
 script: 
-  - chmod 777 ./run_static_or_vcenter_tests.sh
-  - ./run_static_or_vcenter_tests.sh 
+  pytest
