@@ -1,7 +1,6 @@
 after_success: coveralls
 install: 
   - pip install -r ./mellanox_os/test_requirements.txt
-  - pip install -r ./mellanox_os/src/requirements.txt
   - pip install "cloudshell-core>=2.0.0,<2.1.0"
 language: python
 notifications: 
@@ -9,4 +8,4 @@ notifications:
 python: 
   - "2.7"
 script: 
-  py.test --cov=driver
+  py.test
