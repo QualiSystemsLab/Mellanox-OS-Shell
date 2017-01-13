@@ -1,0 +1,12 @@
+after_success: coveralls
+install: 
+  - pip install -r ./mellanox_os/test_requirements.txt
+  - pip install -r ./mellanox_os/src/requirements.txt
+  - pip install "cloudshell-core>=2.0.0,<2.1.0"
+language: python
+notifications: 
+  webhools: "https://qualisystemslab-mellanox-os-shell.getbadges.io/api/app/webhook/90319565-e7f2-4f60-81a2-0e2f884b2b56"
+python: 
+  - "2.7"
+script: 
+  py.test
