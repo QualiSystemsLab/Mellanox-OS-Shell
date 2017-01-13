@@ -10,7 +10,6 @@ import re
 # https://github.com/QualiSystems/cloudshell-networking/blob/dev/cloudshell/networking/apply_connectivity/models/connectivity_request.py
 import cloudshell
 
-
 def bugfix():  # pragma: no cover
     fn = os.path.join(os.path.dirname(cloudshell.__file__), 'networking', 'apply_connectivity', 'models', 'connectivity_request.py')
     with open(fn, 'r') as f:
