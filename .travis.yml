@@ -1,7 +1,4 @@
 after_success: coveralls
-env: 
-  - CLOUD_SHELL_SHELL_CORE=1
-  - CLOUD_SHELL_SHELL_CORE=2
 install: 
   - pip install -r mellanox_os/test_requirements.txt
   - pip install -r mellanox_os/requirements.txt
