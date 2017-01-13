@@ -10,4 +10,4 @@ notifications:
 python: 
   - "2.7"
 script: 
-  py.test --cov=mellanox_os tests/
+  py.test --cov=mellanox_os
