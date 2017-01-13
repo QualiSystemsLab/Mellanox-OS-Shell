@@ -9,4 +9,4 @@ notifications:
 python: 
   - "2.7"
 script: 
-  py.test
+  py.test --cov=driver
